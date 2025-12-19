@@ -1,0 +1,158 @@
+/* Reset base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #eef3ff;
+  color: #1e1e1e;
+}
+
+/* Layout principale */
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Header */
+.header {
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin-top: 6px;
+  color: #555;
+}
+
+/* Search */
+.search-section {
+  display: flex;
+  gap: 12px;
+  background: #e7edff;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.search-section input {
+  flex: 1;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+.search-section button {
+  padding: 0 22px;
+  border-radius: 8px;
+  border: none;
+  background: #5b6cff;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.search-section button:hover {
+  background: #4a5af0;
+}
+
+/* Risultati */
+.results-section h2 {
+  margin-bottom: 12px;
+}
+
+.results-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* Card libro */
+.book-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.book-card h3 {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.authors {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.card-body {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+}
+
+.card-body img {
+  width: 90px;
+  height: auto;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.description {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* Azioni */
+.card-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  font-size: 18px;
+  opacity: 0.7;
+}
+
+/* Stati */
+.error {
+  color: #d60000;
+  margin-bottom: 12px;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .search-section {
+    flex-direction: column;
+  }
+
+  .search-section button {
+    width: 100%;
+  }
+
+  .card-body {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .card-body img {
+    width: 120px;
+  }
+}
