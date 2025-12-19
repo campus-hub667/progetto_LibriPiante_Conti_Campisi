@@ -1,0 +1,87 @@
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #eef3ff;
+}
+
+.app {
+  max-width: 1200px;
+  margin: auto;
+  padding: 24px;
+}
+
+header {
+  margin-bottom: 24px;
+}
+
+.search-bar {
+  display: flex;
+  gap: 12px;
+  background: #e7edff;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+}
+
+.search-bar button {
+  background: #5b6cff;
+  color: white;
+  border: none;
+  padding: 0 24px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.grid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+.card img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.card h3 {
+  margin: 12px 0 4px;
+  font-size: 16px;
+}
+
+.author {
+  font-size: 14px;
+  color: #555;
+}
+
+.tag {
+  display: inline-block;
+  margin: 8px 0;
+  background: #eef3ff;
+  color: #445;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.card a {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #5b6cff;
+  text-decoration: none;
+}

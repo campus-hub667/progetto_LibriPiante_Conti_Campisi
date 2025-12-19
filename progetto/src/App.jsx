@@ -1,6 +1,6 @@
 import { useState } from "react";
-import SearchBar from "./components/SearchBar";
-import BookGrid from "./components/BookGrid";
+import SearchBar from "./components/SearchBar.jsx";
+import BookGrid from "./components/BookGrid.jsx";
 import "./App.css";
 
 export default function App() {
