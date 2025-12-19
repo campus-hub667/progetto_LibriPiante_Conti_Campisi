@@ -129,8 +129,6 @@ function BookCard({ book }) {
           </p>
         </div>
       </div>
-
-      <div className="card-actions">🔖 👁️ ℹ️</div>
     </div>
   )
 }
