@@ -1,10 +1,11 @@
-import BookCard from "./BookCard";
+import React from "react";
+import BookCard from "./BookCard.jsx";
 
 export default function BookGrid({ books }) {
   return (
     <div className="grid">
-      {books.map((b) => (
-        <BookCard key={b.id} book={b.volumeInfo} />
+      {books.map((b, i) => (
+        <BookCard key={i} book={b} />
       ))}
     </div>
   );
