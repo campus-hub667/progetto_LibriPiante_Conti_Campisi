@@ -1,4 +1,5 @@
-/* Reset base */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,15 +7,14 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #eef3ff;
-  color: #1e1e1e;
+  font-family: "Inter", system-ui, sans-serif;
+  background: linear-gradient(180deg, #eef3ff, #f8faff);
+  color: #1f2937;
 }
 
-/* Layout principale */
 .app {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: auto;
   padding: 24px;
 }
 
@@ -24,13 +24,13 @@ body {
 }
 
 .header h1 {
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 600;
 }
 
 .subtitle {
-  margin-top: 6px;
-  color: #555;
+  font-size: 14px;
+  color: #6b7280;
 }
 
 /* Search */
@@ -39,104 +39,132 @@ body {
   gap: 12px;
   background: #e7edff;
   padding: 16px;
-  border-radius: 12px;
-  margin-bottom: 24px;
+  border-radius: 14px;
 }
 
 .search-section input {
   flex: 1;
   padding: 14px;
-  font-size: 16px;
-  border-radius: 8px;
+  font-size: 15px;
+  border-radius: 10px;
   border: none;
-  outline: none;
 }
 
 .search-section button {
-  padding: 0 22px;
-  border-radius: 8px;
+  padding: 0 26px;
+  border-radius: 10px;
   border: none;
-  background: #5b6cff;
-  color: #fff;
-  font-size: 18px;
+  background: linear-gradient(135deg, #5b6cff, #6d7cff);
+  color: white;
+  font-weight: 500;
   cursor: pointer;
+  box-shadow: 0 6px 16px rgba(91, 108, 255, 0.35);
 }
 
-.search-section button:hover {
-  background: #4a5af0;
+/* Filtri */
+.filters-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 14px 0 10px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4f46e5;
+  background: #f3f5ff;
+  border: 1px solid #e0e6ff;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Risultati */
-.results-section h2 {
+.filters-btn:hover {
+  background: #e9edff;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15);
+}
+
+.filters-panel {
+  margin-bottom: 20px;
+  padding: 14px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.filters-panel label {
+  font-size: 13px;
+  color: #374151;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filters-panel input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #dbe1ff;
+}
+
+/* Results */
+.results-count {
   margin-bottom: 12px;
+  font-size: 13px;
+  color: #6b7280;
 }
 
 .results-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
 }
 
-/* Card libro */
+/* Card */
 .book-card {
-  background: #fff;
-  border-radius: 14px;
+  background: white;
   padding: 16px;
+  border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.book-card img {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 10px;
 }
 
 .book-card h3 {
-  font-size: 16px;
+  font-size: 15px;
   margin-bottom: 4px;
 }
 
 .authors {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 10px;
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 8px;
 }
 
-.card-body {
-  display: flex;
-  gap: 12px;
-  flex: 1;
+.book-card a {
+  font-size: 13px;
+  color: #5b6cff;
+  text-decoration: none;
 }
 
-.card-body img {
-  width: 90px;
-  height: auto;
-  border-radius: 6px;
-  object-fit: cover;
-}
-
-.description {
-  font-size: 14px;
-  color: #333;
-  line-height: 1.4;
-}
-
-/* Azioni */
-.card-actions {
-  margin-top: 12px;
-  display: flex;
-  gap: 12px;
-  font-size: 18px;
-  opacity: 0.7;
-}
-
-/* Stati */
+/* States */
 .error {
   color: #d60000;
-  margin-bottom: 12px;
 }
 
 .hidden {
   display: none;
 }
 
-/* Responsive */
+/* Mobile */
 @media (max-width: 768px) {
   .search-section {
     flex-direction: column;
@@ -144,15 +172,5 @@ body {
 
   .search-section button {
     width: 100%;
-  }
-
-  .card-body {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .card-body img {
-    width: 120px;
   }
 }
