@@ -5,18 +5,33 @@ const app = document.querySelector("#app")
 app.innerHTML = `
   <div class="app">
     <header class="header">
-      <h1>BooksArchive</h1>
-      <p class="subtitle">Scopri libri, autori e storie</p>
+      <h1>LibreriaOnline</h1>
+      <p class="subtitle">
+        Cerca e scopri milioni di libri da tutto il mondo
+      </p>
     </header>
 
     <section class="search-section">
-      <input id="titleInput" placeholder="Cerca un libro" />
-      <input id="authorInput" placeholder="Autore" />
-      <button id="searchBtn">🔍</button>
+      <input
+        id="searchInput"
+        placeholder="Cerca per titolo, autore, ISBN o argomento..."
+      />
+      <button id="searchBtn">Cerca</button>
+    </section>
+
+    <button id="filtersBtn" class="filters-btn">
+      <span>Filtri</span>
+    </button>
+
+    <section id="filtersPanel" class="filters-panel hidden">
+      <label>
+        Anno minimo
+        <input id="yearInput" type="number" placeholder="Es. 1950" />
+      </label>
     </section>
 
     <section class="results-section">
-      <h2>Risultati</h2>
+      <p id="resultsCount" class="results-count hidden"></p>
       <p id="loading" class="hidden">Caricamento...</p>
       <p id="error" class="error hidden"></p>
       <div id="results" class="results-list"></div>
@@ -24,36 +39,55 @@ app.innerHTML = `
   </div>
 `
 
-const titleInput = document.querySelector("#titleInput")
-const authorInput = document.querySelector("#authorInput")
+
+const searchInput = document.querySelector("#searchInput")
 const searchBtn = document.querySelector("#searchBtn")
+const filtersBtn = document.querySelector("#filtersBtn")
+const filtersPanel = document.querySelector("#filtersPanel")
+const yearInput = document.querySelector("#yearInput")
 const results = document.querySelector("#results")
 const loading = document.querySelector("#loading")
 const error = document.querySelector("#error")
+const resultsCount = document.querySelector("#resultsCount")
+
 
 searchBtn.addEventListener("click", fetchBooks)
+filtersBtn.addEventListener("click", () => {
+  filtersPanel.classList.toggle("hidden")
+})
+
 
 async function fetchBooks() {
-  const title = titleInput.value.trim()
-  const author = authorInput.value.trim()
+  const query = searchInput.value.trim()
+  const year = yearInput.value
 
-  if (!title) return
+  if (!query) return
 
   results.innerHTML = ""
-  error.classList.add("hidden")
+  resultsCount.classList.add("hidden")
   loading.classList.remove("hidden")
+  error.classList.add("hidden")
 
   try {
     const res = await fetch(
-      `https://openlibrary.org/search.json?q=${encodeURIComponent(
-        title + " " + author
-      )}`
+      https://openlibrary.org/search.json?q=${encodeURIComponent(query)}
     )
     const data = await res.json()
 
-    const books = data.docs.slice(0, 10)
+    let books = data.docs
 
-    books.forEach(renderBook)
+    if (year) {
+      books = books.filter(
+        (b) => b.first_publish_year && b.first_publish_year >= year
+      )
+    }
+
+    const sliced = books.slice(0, 12)
+
+    resultsCount.textContent = ${sliced.length} risultati trovati
+    resultsCount.classList.remove("hidden")
+
+    sliced.forEach(renderBook)
   } catch (e) {
     error.textContent = "Errore nel caricamento dei dati"
     error.classList.remove("hidden")
@@ -62,34 +96,40 @@ async function fetchBooks() {
   }
 }
 
+
 function renderBook(book) {
-  const div = document.createElement("div")
-  div.className = "book-card"
+  const card = document.createElement("div")
+  card.className = "book-card"
 
   const cover = book.cover_i
-    ? `<img src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg" />`
+    ? <img src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg" />
     : ""
 
-  const authors = book.author_name?.join(", ") || "Autore sconosciuto"
-
-  const description =
-    typeof book.first_sentence === "string"
-      ? book.first_sentence
-      : typeof book.first_sentence?.value === "string"
-      ? book.first_sentence.value
-      : "Descrizione non disponibile"
-
-  div.innerHTML = `
+  card.innerHTML = `
+    ${cover}
     <h3>${book.title}</h3>
-    <p class="authors">${authors}</p>
-    <div class="card-body">
-      ${cover}
-      <div class="description">
-        <p>${description}</p>
-      </div>
-    </div>
-    <div class="card-actions">🔖 👁️ ℹ️</div>
+    <p class="authors">${book.author_name?.[0] || "Autore sconosciuto"}</p>
+    <a href="https://openlibrary.org${book.key}" target="_blank">
+      Vedi dettagli ↗
+    </a>
   `
 
-  results.appendChild(div)
+  results.appendChild(card)
 }
+
+
+const randomQueries = [
+  "fiction",
+  "history",
+  "science",
+  "art",
+  "philosophy",
+  "novel"
+]
+
+window.addEventListener("load", () => {
+  const random =
+    randomQueries[Math.floor(Math.random() * randomQueries.length)]
+  searchInput.value = random
+  fetchBooks()
+})
