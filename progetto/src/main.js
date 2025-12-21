@@ -1,120 +1,135 @@
+import "./style.css"
+
 const app = document.querySelector("#app")
 
 app.innerHTML = `
-<header class="header">
-  <h1>LibreriaOnline</h1>
-  <p class="subtitle">Cerca e scopri milioni di libri da tutto il mondo</p>
+  <div class="app">
+    <header class="header">
+      <h1>LibreriaOnline</h1>
+      <p class="subtitle">
+        Cerca e scopri milioni di libri da tutto il mondo
+      </p>
+    </header>
 
-  <div class="search-bar">
-    <input
-      id="searchInput"
-      placeholder="Cerca per titolo, autore, ISBN o argomento..."
-    />
-    <button id="searchBtn">Cerca</button>
+    <section class="search-section">
+      <input
+        id="searchInput"
+        placeholder="Cerca per titolo, autore, ISBN o argomento..."
+      />
+      <button id="searchBtn">Cerca</button>
+    </section>
+
+    <button id="filtersBtn" class="filters-btn">
+      <span>Filtri</span>
+    </button>
+
+    <section id="filtersPanel" class="filters-panel hidden">
+      <label>
+        Anno minimo
+        <input id="yearInput" type="number" placeholder="Es. 1950" />
+      </label>
+    </section>
+
+    <section class="results-section">
+      <p id="resultsCount" class="results-count hidden"></p>
+      <p id="loading" class="hidden">Caricamento...</p>
+      <p id="error" class="error hidden"></p>
+      <div id="results" class="results-list"></div>
+    </section>
   </div>
-
-  <button id="filtersBtn" class="filters-btn">🔽 Filtri</button>
-
-  <section id="filtersPanel" class="filters-panel hidden">
-    <div class="filters-header">
-      <strong>Filtri</strong>
-      <button id="closeFilters">✕</button>
-    </div>
-
-    <label>
-      Ordina per
-      <select id="order">
-        <option value="relevance">Rilevanza</option>
-        <option value="new">Più recenti</option>
-      </select>
-    </label>
-
-    <label>
-      Lingua
-      <select id="language">
-        <option value="">Tutte le lingue</option>
-        <option value="eng">Inglese</option>
-        <option value="ita">Italiano</option>
-      </select>
-    </label>
-
-    <fieldset>
-      <legend>Generi</legend>
-      <label><input type="checkbox" value="fiction" /> Fiction</label>
-      <label><input type="checkbox" value="fantasy" /> Fantasy</label>
-      <label><input type="checkbox" value="mystery" /> Mystery</label>
-      <label><input type="checkbox" value="romance" /> Romance</label>
-      <label><input type="checkbox" value="science_fiction" /> Science Fiction</label>
-    </fieldset>
-  </section>
-</header>
-
-<section id="results" class="grid"></section>
 `
+
 
 const searchInput = document.querySelector("#searchInput")
 const searchBtn = document.querySelector("#searchBtn")
-const results = document.querySelector("#results")
 const filtersBtn = document.querySelector("#filtersBtn")
 const filtersPanel = document.querySelector("#filtersPanel")
-const closeFilters = document.querySelector("#closeFilters")
+const yearInput = document.querySelector("#yearInput")
+const results = document.querySelector("#results")
+const loading = document.querySelector("#loading")
+const error = document.querySelector("#error")
+const resultsCount = document.querySelector("#resultsCount")
 
-filtersBtn.onclick = () => filtersPanel.classList.toggle("hidden")
-closeFilters.onclick = () => filtersPanel.classList.add("hidden")
 
-searchBtn.onclick = () => searchBooks()
-searchInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") searchBooks()
+searchBtn.addEventListener("click", fetchBooks)
+filtersBtn.addEventListener("click", () => {
+  filtersPanel.classList.toggle("hidden")
 })
 
-async function searchBooks() {
-  const query = searchInput.value
+
+async function fetchBooks() {
+  const query = searchInput.value.trim()
+  const year = yearInput.value
+
   if (!query) return
 
-  const order = document.querySelector("#order").value
-  const language = document.querySelector("#language").value
-  const genres = [...document.querySelectorAll("fieldset input:checked")]
-    .map(cb => cb.value)
-    .join(" ")
+  results.innerHTML = ""
+  resultsCount.classList.add("hidden")
+  loading.classList.remove("hidden")
+  error.classList.add("hidden")
 
-  let q = `${query} ${genres}`.trim()
-  let url = `https://openlibrary.org/search.json?q=${encodeURIComponent(q)}`
+  try {
+    const res = await fetch(
+      `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`
+    )
+    const data = await res.json()
 
-  if (language) url += `&language=${language}`
-  if (order === "new") url += `&sort=first_publish_year desc`
+    let books = data.docs
 
-  const res = await fetch(url)
-  const data = await res.json()
-  renderBooks(data.docs.slice(0, 12))
-}
+    if (year) {
+      books = books.filter(
+        (b) => b.first_publish_year && b.first_publish_year >= year
+      )
+    }
 
-function renderBooks(books) {
-  results.innerHTML = books
-    .map(book => `
-    <div class="card">
-      <img
-        src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg"
-        onerror="this.style.display='none'"
-      />
-      <h3>${book.title}</h3>
-      <p class="author">${book.author_name?.[0] || "Autore sconosciuto"}</p>
+    const sliced = books.slice(0, 12)
 
-      <div class="meta">
-        ${book.first_publish_year ? `<span>📅 ${book.first_publish_year}</span>` : ""}
-        ${
-          book.subject
-            ? book.subject.slice(0, 3).map(s => `<span>${s}</span>`).join("")
-            : ""
-        }
-      </div>
+    resultsCount.textContent = `${sliced.length} risultati trovati`
+    resultsCount.classList.remove("hidden")
 
-      <a href="https://openlibrary.org${book.key}" target="_blank">
-        Vedi dettagli ↗
-      </a>
-    </div>
-  `)
-    .join("")
+    sliced.forEach(renderBook)
+  } catch (e) {
+    error.textContent = "Errore nel caricamento dei dati"
+    error.classList.remove("hidden")
+  } finally {
+    loading.classList.add("hidden")
+  }
 }
 
 
-searchBooks("classic")
+function renderBook(book) {
+  const card = document.createElement("div")
+  card.className = "book-card"
+
+  const cover = book.cover_i
+    ? `<img src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg" />`
+    : ""
+
+  card.innerHTML = `
+    ${cover}
+    <h3>${book.title}</h3>
+    <p class="authors">${book.author_name?.[0] || "Autore sconosciuto"}</p>
+    <a href="https://openlibrary.org${book.key}" target="_blank">
+      Vedi dettagli ↗
+    </a>
+  `
+
+  results.appendChild(card)
+}
+
+
+const randomQueries = [
+  "fiction",
+  "history",
+  "science",
+  "art",
+  "philosophy",
+  "novel"
+]
+
+window.addEventListener("load", () => {
+  const random =
+    randomQueries[Math.floor(Math.random() * randomQueries.length)]
+  searchInput.value = random
+  fetchBooks()
+})
