@@ -70,7 +70,7 @@ async function fetchBooks() {
 
   try {
     const res = await fetch(
-      https://openlibrary.org/search.json?q=${encodeURIComponent(query)}
+      `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`
     )
     const data = await res.json()
 
@@ -84,7 +84,7 @@ async function fetchBooks() {
 
     const sliced = books.slice(0, 12)
 
-    resultsCount.textContent = ${sliced.length} risultati trovati
+    resultsCount.textContent = `${sliced.length} risultati trovati`
     resultsCount.classList.remove("hidden")
 
     sliced.forEach(renderBook)
@@ -102,7 +102,7 @@ function renderBook(book) {
   card.className = "book-card"
 
   const cover = book.cover_i
-    ? <img src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg" />
+    ? `<img src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg" />`
     : ""
 
   card.innerHTML = `
